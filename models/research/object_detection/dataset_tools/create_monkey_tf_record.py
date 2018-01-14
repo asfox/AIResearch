@@ -5,7 +5,8 @@ Created on Fri Jan 12 14:23:20 2018
 
 @author: rurikoimai
 """
-
+import random
+import os
 import tensorflow as tf
 import matplotlib.image as mpimg
 from object_detection.utils import dataset_util
@@ -13,8 +14,9 @@ from object_detection.utils import dataset_util
 
 flags = tf.app.flags
 #flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
-flags.DEFINE_string('output_path', '', 'Users/rurikoimai/AIResearch/models/research/object_detection/')
-flags.DEFINE_string('data_dir', 'Users/rurikoimai/Desktop/images/', 'Root directory to raw monkey dataset')
+flags.DEFINE_string('test_output_path', '', 'Users/rurikoimai/AIResearch/models/research/object_detection/test.records')
+flags.DEFINE_string('train_output_path', '', 'Users/rurikoimai/AIResearch/models/research/object_detection/train.records')
+flags.DEFINE_string('data_dir', 'Users/rurikoimai/Desktop/moneky_images/', 'Root directory to raw monkey dataset')
 flags.DEFINE_string('label_map_path', 'data/monkey_label_map.pbtxt', 'Path to lavel map proto')
 FLAGS = flags.FLAGS
 
@@ -69,16 +71,25 @@ def create_tf_example( roi_file ):
 
 
 def main(_):
-
-    writer = tf.python_io.TFRecordWriter(FLAGS.output_path)
+    test_images = os.path.join(FLAGS.data_dir, 'test')
+    train_images = os.path.join(FLAGS.data_dir, 'train')
+    
+    writer_test = tf.python_io.TFRecordWriter(FLAGS.test_output_path)
+    writer_train = tf.python_io.TFRecordWriter(Flags.train_output_path)
 
     # TODO(user): Write code to read in your dataset to examples variable
 
-    for roi_file in file_list:
-        tf_example = create_tf_example(roi_file)
-        writer.write(tf_example.SerializeToString())
+    for roi_file in test_images:
+        tf_test = create_tf_example(roi_file)
+        writer_test.write(tf_test.SerializeToString())
+        
+    writer_test.close()
 
-    writer.close()
+    for roi_file in train_images:
+        tf_train = create_tf_example(roi_file)
+        writer_train.write(tf_train.SerializeToString())
+        
+    writer_train.close()
 
 
 if __name__ == '__main__':
