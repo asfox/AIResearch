@@ -7,6 +7,7 @@ Created on Fri Jan 12 14:23:20 2018
 """
 
 import os
+import glob
 import tensorflow as tf
 import matplotlib.image as mpimg
 from object_detection.utils import dataset_util
@@ -74,8 +75,10 @@ def main(_):
     train_filename = 'train.records'
     test_filename = 'test.records'
     
-    test_images = os.path.join(FLAGS.data_dir, 'test')
-    train_images = os.path.join(FLAGS.data_dir, 'train')
+    #test_images = os.path.join(FLAGS.data_dir, 'test')
+    #train_images = os.path.join(FLAGS.data_dir, 'train')
+    test_images = glob.glob( '/Users/rurikoimai/Desktop/monkey_images/test/*.csv' )
+    train_images = glob.glob( '/Users/rurikoimai/Desktop/monkey_images/train/*.csv' )
     
     writer_test = tf.python_io.TFRecordWriter(train_filename)
     writer_train = tf.python_io.TFRecordWriter(test_filename)
