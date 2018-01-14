@@ -5,7 +5,7 @@ Created on Fri Jan 12 14:23:20 2018
 
 @author: rurikoimai
 """
-import random
+
 import os
 import tensorflow as tf
 import matplotlib.image as mpimg
@@ -14,8 +14,8 @@ from object_detection.utils import dataset_util
 
 flags = tf.app.flags
 #flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
-flags.DEFINE_string('test_output_path', '', 'Users/rurikoimai/AIResearch/models/research/object_detection/test.records')
-flags.DEFINE_string('train_output_path', '', 'Users/rurikoimai/AIResearch/models/research/object_detection/train.records')
+flags.DEFINE_string('test_output_path', '', '../test.record')
+flags.DEFINE_string('train_output_path', '', '../train.record')
 flags.DEFINE_string('data_dir', 'Users/rurikoimai/Desktop/moneky_images/', 'Root directory to raw monkey dataset')
 flags.DEFINE_string('label_map_path', 'data/monkey_label_map.pbtxt', 'Path to lavel map proto')
 FLAGS = flags.FLAGS
@@ -28,7 +28,7 @@ def create_tf_example( roi_file ):
   
     img = mpimg.imread(image_file)
     height = img.shape[0] # Image height
-    width = img.shape[0] # Image width
+    width = img.shape[1] # Image width
   
     with open(roi_file) as fp:
         roi_list = [x.strip().split(',') for x in fp.readlines()]
@@ -46,18 +46,18 @@ def create_tf_example( roi_file ):
         ymins.append(coords[1])
         ymaxs.append(coords[3])
   
-    filename = image_file # Filename of the image. Empty if image is not from file
+    #filename = image_file # Filename of the image. Empty if image is not from file
     encoded_image_data = str(img.dtype) # Encoded image bytes
     image_format = b'png' # b'jpeg' or b'png'
 
-    classes_text = ['Monkey'] # List of string class name of bounding box (1 per box)
+    classes_text = ['Monkey' for x in xmins] # List of string class name of bounding box (1 per box)
     classes = [1 for x in xmins] # List of integer class id of bounding box (1 per box)
 
     tf_example = tf.train.Example(features=tf.train.Features(feature={
         'image/height': dataset_util.int64_feature(height),
         'image/width': dataset_util.int64_feature(width),
-        'image/filename': dataset_util.bytes_feature(filename),
-        'image/source_id': dataset_util.bytes_feature(filename),
+        'image/filename': dataset_util.bytes_feature(image_file),
+        'image/source_id': dataset_util.bytes_feature(image_file),
         'image/encoded': dataset_util.bytes_feature(encoded_image_data),
         'image/format': dataset_util.bytes_feature(image_format),
         'image/object/bbox/xmin': dataset_util.float_list_feature(xmins),
@@ -71,11 +71,14 @@ def create_tf_example( roi_file ):
 
 
 def main(_):
+    train_filename = 'train.records'
+    test_filename = 'test.records'
+    
     test_images = os.path.join(FLAGS.data_dir, 'test')
     train_images = os.path.join(FLAGS.data_dir, 'train')
     
-    writer_test = tf.python_io.TFRecordWriter(FLAGS.test_output_path)
-    writer_train = tf.python_io.TFRecordWriter(Flags.train_output_path)
+    writer_test = tf.python_io.TFRecordWriter(train_filename)
+    writer_train = tf.python_io.TFRecordWriter(test_filename)
 
     # TODO(user): Write code to read in your dataset to examples variable
 
