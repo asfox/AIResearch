@@ -15,8 +15,8 @@ from object_detection.utils import dataset_util
 
 flags = tf.app.flags
 #flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
-flags.DEFINE_string('test_output_path', '', '../test.record')
-flags.DEFINE_string('train_output_path', '', '../train.record')
+flags.DEFINE_string('test_output_path', '', '../data/test.record')
+flags.DEFINE_string('train_output_path', '', '../data/train.record')
 flags.DEFINE_string('data_dir', 'Users/rurikoimai/Desktop/moneky_images/', 'Root directory to raw monkey dataset')
 flags.DEFINE_string('label_map_path', 'data/monkey_label_map.pbtxt', 'Path to lavel map proto')
 FLAGS = flags.FLAGS
@@ -72,8 +72,8 @@ def create_tf_example( roi_file ):
 
 
 def main(_):
-    train_filename = 'train.records'
-    test_filename = 'test.records'
+    train_filename = '../data/train.records'
+    test_filename = '../data/test.records'
     
     #test_images = os.path.join(FLAGS.data_dir, 'test')
     #train_images = os.path.join(FLAGS.data_dir, 'train')
