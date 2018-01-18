@@ -48,7 +48,7 @@ def create_tf_example( roi_file ):
         ymaxs.append(coords[3])
   
     #filename = image_file # Filename of the image. Empty if image is not from file
-    encoded_image_data = str(img.dtype) # Encoded image bytes
+    encoded_image_data = tf.image.encode_png(img) # Encoded image bytes
     image_format = b'png' # b'jpeg' or b'png'
 
     classes_text = ['Monkey' for x in xmins] # List of string class name of bounding box (1 per box)
